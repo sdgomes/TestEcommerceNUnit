@@ -11,6 +11,13 @@ namespace TestEcommerceNUnit
     {
         private IWebDriver driver;
 
+        public ClienteTest() { }
+
+        public ClienteTest(IWebDriver _driver)
+        {
+            driver = _driver;
+        }
+
         [SetUp]
         public void Setup()
         {
@@ -24,128 +31,128 @@ namespace TestEcommerceNUnit
             IWebElement input = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] input[name$='cep']"));
             input.Clear();
             input.SendKeys(Endereco.CEP);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             IWebElement button = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] .viacep"));
             button.Click();
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             IWebElement select = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] select[name$='tipoLogradouro']"));
             var selectElement = new SelectElement(select);
             selectElement.SelectByText(Endereco.TipoLogradouro);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             select = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] select[name$='tipoResidencia']"));
             selectElement = new SelectElement(select);
             selectElement.SelectByText(Endereco.TipoResidencia);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             input = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] input[name$='numero']"));
             input.Clear();
             input.SendKeys(Endereco.Numero);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             input = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] input[name$='nomeEndereco']"));
             input.Clear();
             input.SendKeys(Endereco.NomeEndereco);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             button = driver.FindElement(By.CssSelector($@"[data-test-target='{Tipo}'] [data-action='next']"));
             button.Click();
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
         }
 
         public void CadastroCliente(Client Cliente)
         {
-            IWebElement input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='nome']"));
+            IWebElement input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='.nome']"));
             input.Clear();
             input.SendKeys(Cliente.Nome);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='sobrenome']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='.sobrenome']"));
             input.Clear();
             input.SendKeys(Cliente.Sobrenome);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='cpf']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='cpf']"));
             input.Clear();
             input.SendKeys(Cliente.CPF);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='celular']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='celular']"));
             input.Clear();
             input.SendKeys(Cliente.Celular);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='telefone']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='telefone']"));
             input.Clear();
             input.SendKeys(Cliente.Telefone);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='rg']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='rg']"));
             input.Clear();
             input.SendKeys(Cliente.RG);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] input[name$='dataNascimento']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] input[name$='dataNascimento']"));
             input.Clear();
             input.SendKeys(Cliente.DataNascimento.ToString("d"));
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement select = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] select[name$='genero']"));
+            IWebElement select = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] select[name$='genero']"));
             var selectElement = new SelectElement(select);
             selectElement.SelectByText(Cliente.Genero);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement button = driver.FindElement(By.CssSelector($@"[data-test-target='dados-cadastrais'] [data-action='next']"));
+            IWebElement button = driver.FindElement(By.CssSelector("[data-test-target='dados-cadastrais'] [data-action='next']"));
             button.Click();
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
         }
 
         public void CartaoCredito(Card Cartao)
         {
-            IWebElement select = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] select[name$='idBandeira']"));
+            IWebElement select = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] select[name$='idBandeira']"));
             var selectElement = new SelectElement(select);
             selectElement.SelectByText(Cartao.NomeBandeira);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='nomeTitular']"));
+            IWebElement input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='nomeTitular']"));
             input.Clear();
             input.SendKeys(Cartao.NomeTitular);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='nomeCartao']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='nomeCartao']"));
             input.Clear();
             input.SendKeys(Cartao.NomeCartao);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='CPFTitular']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='CPFTitular']"));
             input.Clear();
             input.SendKeys(Cartao.CPFTitular);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='numero']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='numero']"));
             input.Clear();
             input.SendKeys(Cartao.Numero);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='mes']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='mes']"));
             input.Clear();
             input.SendKeys(Cartao.DataValidade.Split("/")[0]);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='ano']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='ano']"));
             input.Clear();
             input.SendKeys(Cartao.DataValidade.Split("/")[1]);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] input[name$='codigoSeguranca']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] input[name$='codigoSeguranca']"));
             input.Clear();
             input.SendKeys(Cartao.CodigoSeguranca);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement button = driver.FindElement(By.CssSelector($@"[data-test-target='informacoes-pagamento'] [data-action='next']"));
+            IWebElement button = driver.FindElement(By.CssSelector("[data-test-target='informacoes-pagamento'] [data-action='next']"));
             button.Click();
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
         }
 
         [Test]
@@ -153,6 +160,7 @@ namespace TestEcommerceNUnit
         {
             /** Navegar para a pagina de cadastro */
             driver.Navigate().GoToUrl("http://localhost/cadastro/cliente");
+            System.Threading.Thread.Sleep(5000);
 
             /** Cadastro de dados pessoais */
             Client Cliente = new();
@@ -180,7 +188,7 @@ namespace TestEcommerceNUnit
 
             PreencheEndereco(Endereco, "endereco-prinicpal");
 
-            /** Cadastro do Cart�o de credito */
+            /** Cadastro do Cartao de credito */
             Card Cartao = new();
             Cartao.NomeBandeira = "Mastercard";
             Cartao.NomeTitular = Cliente.Nome + " " + Cliente.Sobrenome;
@@ -197,29 +205,29 @@ namespace TestEcommerceNUnit
             Endereco.TipoLogradouro = "Rua";
             Endereco.TipoResidencia = "Apartamento";
             Endereco.Numero = "S/N";
-            Endereco.NomeEndereco = "Casa da v�";
+            Endereco.NomeEndereco = "Casa da vo";
 
             PreencheEndereco(Endereco, "endereco-cobranca");
 
             /** Preenche dados de acesso */
-            IWebElement input = driver.FindElement(By.CssSelector($@"[data-test-target='infomacoes-acesso'] input[name$='email']"));
+            IWebElement input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='email']"));
             input.Clear();
             input.SendKeys(Cliente.Email);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='infomacoes-acesso'] input[name$='senha']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='senha']"));
             input.Clear();
             input.SendKeys(Cliente.Senha);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"[data-test-target='infomacoes-acesso'] input[name$='confirmaSenha']"));
+            input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='confirmaSenha']"));
             input.Clear();
             input.SendKeys(Cliente.Senha);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement button = driver.FindElement(By.XPath($@"//*[@id='submit']"));
+            IWebElement button = driver.FindElement(By.XPath("//*[@id='submit']"));
             button.Click();
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
             // Aguarda alguns segundos para visualizar o resultado (opcional)
             System.Threading.Thread.Sleep(5000);
@@ -227,31 +235,24 @@ namespace TestEcommerceNUnit
             Assert.Pass();
         }
 
-        public void LoginCliente()
-        {
-            /** Navegar para a pagina inical */
-            driver.Navigate().GoToUrl("http://localhost/cadastro/cliente");
-
-            Client Cliente = new();
-            Cliente.Email = "sabrina.alessandra@gmail.com.br";
-            Cliente.Senha = "2hAxOT85kf.";
-
-            IWebElement button = driver.FindElement(By.XPath($@"//*[@id='entrar']"));
+        public void LoginCliente(Client Cliente)
+        {        
+            IWebElement button = driver.FindElement(By.XPath("//*[@id='entrar']"));
             button.Click();
             System.Threading.Thread.Sleep(500);
 
             /** Preenche acesso */
-            IWebElement input = driver.FindElement(By.XPath($@"//*[@id='login-cliente']/label[1]/label/input"));
+            IWebElement input = driver.FindElement(By.XPath("//*[@id='login-cliente']/label[1]/label/input"));
             input.Clear();
             input.SendKeys(Cliente.Email);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.XPath($@"//*[@id='login-cliente']/label[2]/label/input"));
+            input = driver.FindElement(By.XPath("//*[@id='login-cliente']/label[2]/label/input"));
             input.Clear();
             input.SendKeys(Cliente.Senha);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            button = driver.FindElement(By.XPath($@"/html/body/div/div/div[6]/button[1]"));
+            button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[1]"));
             button.Click();
             System.Threading.Thread.Sleep(500);
         }
@@ -259,7 +260,15 @@ namespace TestEcommerceNUnit
         [Test]
         public void BuscaCliente()
         {
-            LoginCliente();
+            /** Navegar para a pagina inical */
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
+
+            Client Cliente = new();
+            Cliente.Email = "sabrina.alessandra@gmail.com.br";
+            Cliente.Senha = "2hAxOT85kf.";
+
+            LoginCliente(Cliente);
 
             System.Threading.Thread.Sleep(5000);
 
@@ -269,17 +278,23 @@ namespace TestEcommerceNUnit
         [Test]
         public void EditaCliente()
         {
-            LoginCliente();
-
-            IWebElement button = driver.FindElement(By.XPath($@"/html/body/main/div[2]/div/div[1]/div/div[2]/a"));
-            button.Click();
-            System.Threading.Thread.Sleep(500);
-
-            button = driver.FindElement(By.XPath($@"/html/body/main/div[2]/div[2]/div[1]/div[2]/div/button"));
-            button.Click();
-            System.Threading.Thread.Sleep(500);
+            /** Navegar para a pagina inical */
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
 
             Client Cliente = new();
+            Cliente.Email = "sabrina.alessandra@gmail.com.br";
+            Cliente.Senha = "2hAxOT85kf.";
+
+            LoginCliente(Cliente);
+
+            IWebElement button = driver.FindElement(By.XPath("/html/body/main/div[2]/div/div[1]/div/div[2]/a"));
+            button.Click();
+            System.Threading.Thread.Sleep(500);
+
+            button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/div[1]/div[2]/div/button"));
+            button.Click();
+            System.Threading.Thread.Sleep(500);
 
             Cliente.Nome = "Geraldo";
             Cliente.Sobrenome = "Vitor Jesus";
@@ -290,47 +305,47 @@ namespace TestEcommerceNUnit
             Cliente.DataNascimento = new DateTime(1990, 03, 18);
             Cliente.Genero = "Masculino";
 
-            IWebElement input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='nome']"));
+            IWebElement input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='nome']"));
             input.Clear();
             input.SendKeys(Cliente.Nome);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='sobrenome']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='sobrenome']"));
             input.Clear();
             input.SendKeys(Cliente.Sobrenome);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='cpf']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='cpf']"));
             input.Clear();
             input.SendKeys(Cliente.CPF);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='celular']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='celular']"));
             input.Clear();
             input.SendKeys(Cliente.Celular);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='telefone']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='telefone']"));
             input.Clear();
             input.SendKeys(Cliente.Telefone);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='rg']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='rg']"));
             input.Clear();
             input.SendKeys(Cliente.RG);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            input = driver.FindElement(By.CssSelector($@"#form-altera-cliente input[name$='dataNascimento']"));
+            input = driver.FindElement(By.CssSelector("#form-altera-cliente input[name$='dataNascimento']"));
             input.Clear();
             input.SendKeys(Cliente.DataNascimento.ToString("d"));
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            IWebElement select = driver.FindElement(By.CssSelector($@"#form-altera-cliente select[name$='genero']"));
+            IWebElement select = driver.FindElement(By.CssSelector("#form-altera-cliente select[name$='genero']"));
             var selectElement = new SelectElement(select);
             selectElement.SelectByText(Cliente.Genero);
-            System.Threading.Thread.Sleep(300);
+            System.Threading.Thread.Sleep(1000);
 
-            button = driver.FindElement(By.XPath($@"/html/body/div/div/div[6]/button[3]"));
+            button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
             button.Click();
             System.Threading.Thread.Sleep(500);
 
@@ -342,13 +357,21 @@ namespace TestEcommerceNUnit
         [Test]
         public void ApagaCliente()
         {
-            LoginCliente();
+            /** Navegar para a pagina inical */
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
 
-            IWebElement button = driver.FindElement(By.XPath($@"//*[@id='excluir-conta']"));
+            Client Cliente = new();
+            Cliente.Email = "sabrina.alessandra@gmail.com.br";
+            Cliente.Senha = "2hAxOT85kf.";
+
+            LoginCliente(Cliente);
+
+            IWebElement button = driver.FindElement(By.XPath("//*[@id='excluir-conta']"));
             button.Click();
             System.Threading.Thread.Sleep(800);
 
-            button = driver.FindElement(By.XPath($@"/html/body/div/div/div[6]/button[3]"));
+            button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
             button.Click();
             System.Threading.Thread.Sleep(500);
 
