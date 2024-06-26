@@ -209,3 +209,4 @@ D:\GitHub\Final\TestEcommerceNUnit\obj\Debug\net5.0\TestEcommerceNUnit.dll
 D:\GitHub\Final\TestEcommerceNUnit\obj\Debug\net5.0\ref\TestEcommerceNUnit.dll
 D:\GitHub\Final\TestEcommerceNUnit\obj\Debug\net5.0\TestEcommerceNUnit.pdb
 D:\GitHub\Final\TestEcommerceNUnit\obj\Debug\net5.0\TestEcommerceNUnit.genruntimeconfig.cache
+D:\GitHub\Final\TestEcommerceNUnit\bin\Debug\net5.0\SeleniumExtras.WaitHelpers.dll

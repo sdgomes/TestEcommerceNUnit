@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "wQnI/BlXdGtTw3bO9v/ajKu9xpsUUZVF0zwBx0hXppKAiUrXf9u4734Tm73uP8di5+3mdgivghgxKDkPu8pN6A==",
+  "dgSpecHash": "A8g3nE4fYEvrVJYO+rkHIIlZyPF12TMpKdlnqM+V1W4fj8xd9Cv5sRLKAD5RSPcVFIjeB8XsvGgj8oNs01K5jw==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\Final\\TestEcommerceNUnit\\TestEcommerceNUnit.csproj",
   "expectedPackageFiles": [
@@ -22,6 +22,7 @@
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\selenium.support\\4.22.0\\selenium.support.4.22.0.nupkg.sha512",
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\selenium.webdriver\\4.22.0\\selenium.webdriver.4.22.0.nupkg.sha512",
+    "C:\\Users\\oseias.gomes\\.nuget\\packages\\seleniumextras.waithelpers\\1.0.2\\seleniumextras.waithelpers.1.0.2.nupkg.sha512",
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\system.appcontext\\4.1.0\\system.appcontext.4.1.0.nupkg.sha512",
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\oseias.gomes\\.nuget\\packages\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
