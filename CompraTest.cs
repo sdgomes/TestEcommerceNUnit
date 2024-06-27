@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using TestEcommerceNUnit.Models;
 
 namespace TestEcommerceNUnit
 {
-    class CompraTest
+    class CompraTest : SeleniumActions
     {
         private IWebDriver driver;
 
@@ -18,476 +19,457 @@ namespace TestEcommerceNUnit
         public void Setup()
         {
             driver = new ChromeDriver();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
             driver.Manage().Window.Maximize();
+
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+        }
+
+        protected void SelecionaProdutos()
+        {
+            /** Adiciona 3 Itens ao Carrihno**/
+            Random num = new Random();
+            for (var i = 0; i < 3; i++)
+            {
+                Click($"//*[@id='shop-content']/div/div/div[{num.Next(1, 10)}]/div/div[2]/h4/a");
+                Click("/html/body/main/div[2]/div[2]/form/button[2]");
+
+                if (i < 2)
+                    Click("/html/body/main/div[1]/div/div/div[2]/ul/li[2]/a");
+            }
+        }
+
+        protected void FinalizaCompra()
+        {
+            /* Calculo de frete */
+            Click("//*[@id='container-enderecos']/div[1]/label");
+
+            var texto = Element("//*[@id=\"container-enderecos\"]/div[1]/label/div/div/div[1]").Text;
+
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input", texto);
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button");
+
+            System.Threading.Thread.Sleep(3000);
+
+            /* Cartão de credito*/
+            Click("//*[@id='container-cartoes']/label[1]");
+
+            /* Comprar*/
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button");
+        }
+
+        public void NovoEndereco()
+        {
+            string CEP = "08559-300";
+            Click("//*[@id=\"novo-endereco\"]");
+
+            Input("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[1]/div/div/div/div/input", CEP);
+            Click("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[1]/div/div/div/div/button");
+
+            Select("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[2]/div[1]/div/div/div/select", "Avenida");
+            Select("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[2]/div[2]/div/div/div/select", "Empresa");
+
+            Input("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[2]/div[4]/div/div/div/input", "300");
+            Input("//*[@id=\"form-adiciona-endereco\"]/div[2]/div[2]/div[10]/div/div/div/input", "Trabalho");
+
+            Click("/html/body/div/div/div[6]/button[3]");
+
+            /* Calculo de frete */
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input", CEP);
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button");
+        }
+
+        protected void FinalizaCompraComplexa()
+        {
+            NovoEndereco();
+            System.Threading.Thread.Sleep(3000);
+
+            /* Cartão de credito*/
+            for (var i = 0; i < 3; i++)
+            {
+                Click($"//*[@id='container-cartoes']/label[{i + 1}]");
+            }
+
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[1]/form/div/div[1]/input", "82CCF7CD");
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[1]/form/div/div[2]/button");
+
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[2]/form/div/div[1]/input", "80347");
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[2]/form/div/div[2]/button");
+
+
+            /* Comprar*/
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button");
+
+            var elemnto = Element("//*[@id=\"total-pagar-cartao\"]/span");
+            var numero = elemnto.Text.Replace("R$", "").Trim();
+            double preco = (Double.Parse(numero) / 3);
+
+            for (var i = 0; i < 3; i++)
+            {
+                Input($"//*[@id=\"swal2-html-container\"]/div/form/div[{i + 1}]/div/label/input", preco.ToString("F"));
+            }
+
+            elemnto = Element("//*[@id=\"total-pagar-cartao\"]/span");
+            numero = elemnto.Text.Replace("R$", "").Trim();
+            Input("//*[@id=\"swal2-html-container\"]/div/form/div[3]/div/label/input", (preco + Double.Parse(numero)).ToString("F"));
+
+
+            Click("/html/body/div/div/div[6]/button[3]");
         }
 
         [Test]
         public void CompraSemLogin()
         {
-            //driver.Navigate().GoToUrl("http://localhost/produtos");
-            //System.Threading.Thread.Sleep(3000);
+            var cliente = new Client
+            {
+                Email = "tiago_assuncao@kascher.com.br",
+                Senha = "m2xNzOQPfn.",
+                Nome = "Tiago",
+                Sobrenome = "Assunção",
+                CPF = "441.739.269-28",
+                RG = "22.085.455-5",
+                Telefone = "(41) 3638-4325",
+                Celular = "(41) 98672-8392",
+                DataNascimento = new DateTime(2002, 01, 24),
+                Genero = "Masculino"
+            };
 
-            ///*Item no carrinho*/
-            //IWebElement button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[3]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            var endereco = new Address
+            {
+                CEP = "78745-550",
+                TipoLogradouro = "Rua",
+                TipoResidencia = "Casa",
+                Numero = "234",
+                NomeEndereco = "Minha Casa"
+            };
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/div[3]/div/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            var cartao = new Card
+            {
+                NomeBandeira = "Visa",
+                NomeTitular = cliente.Nome + " " + cliente.Sobrenome,
+                NomeCartao = "Mey Card",
+                CPFTitular = cliente.CPF,
+                Numero = "4485 0429 4065 4583",
+                DataValidade = "12/2024",
+                CodigoSeguranca = "202",
+            };
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("http://localhost/produtos");
+            System.Threading.Thread.Sleep(3000);
 
+            SelecionaProdutos();
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Vai para o carrinho*/
+            Click("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a");
 
-            ///*Outro item no carrinho*/
-            //button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[1]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Calcula frete */
+            Input("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[1]/input", endereco.CEP);
+            Click("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[2]/button");
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Sai do carrinho e vai para cadastro de cliente*/
+            Click("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button");
+            System.Threading.Thread.Sleep(3000);
 
-            ///*Vai para o carrinho*/
-            //button = driver.FindElement(By.XPath("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
+            PreencheDadosPessoais(cliente);
 
-            ///*Calcula frete */
-            //IWebElement input = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[1]/input"));
-            //input.Clear();
-            //input.SendKeys("08740-450");
-            //System.Threading.Thread.Sleep(1000);
+            PreencheEndereco(endereco, "endereco-prinicpal", true);
 
-            //button = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[2]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
+            CartaoCredito(cartao);
 
-            ///*Vai pra tela de cadastro */
-            //button = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(500);
+            Input("[data-test-target='infomacoes-acesso'] input[name$='email']", cliente.Email, "CSS");
+            Input("[data-test-target='infomacoes-acesso'] input[name$='senha']", cliente.Senha, "CSS");
+            Input("[data-test-target='infomacoes-acesso'] input[name$='confirmaSenha']", cliente.Senha, "CSS");
 
-            //Client Cliente = new();
-            //Cliente.Email = "tiago_assuncao@kascher.com.br";
-            //Cliente.Senha = "m2xNzOQPfn.";
+            Click("#submit", "CSS");
 
-            //Cliente.Nome = "Tiago";
-            //Cliente.Sobrenome = "Assunção";
-            //Cliente.CPF = "441.739.269-28";
-            //Cliente.RG = "22.085.455-5";
-            //Cliente.Telefone = "(41) 3638-4325";
-            //Cliente.Celular = "(41) 98672-8392";
-            //Cliente.DataNascimento = new DateTime(2002, 01, 24);
-            //Cliente.Genero = "Masculino";
+            System.Threading.Thread.Sleep(3000);
 
-            //System.Threading.Thread.Sleep(3000);
+            FinalizaCompra();
 
-            //ClienteTest clienteTest = new ClienteTest(driver);
-            //clienteTest.CadastroCliente(Cliente);
+            System.Threading.Thread.Sleep(7000);
 
-            //Address Endereco = new();
-            //Endereco.CEP = "83550-970";
-            //Endereco.TipoLogradouro = "Avenida";
-            //Endereco.TipoResidencia = "Apartamento";
-            //Endereco.Numero = "56 - Bloco B";
-            //Endereco.NomeEndereco = "Minha Casa";
-
-            //clienteTest.PreencheEndereco(Endereco, "endereco-prinicpal");
-
-            //Card Cartao = new();
-            //Cartao.NomeBandeira = "Visa";
-            //Cartao.NomeTitular = Cliente.Nome + " " + Cliente.Sobrenome;
-            //Cartao.NomeCartao = "Mey Card";
-            //Cartao.CPFTitular = Cliente.CPF;
-            //Cartao.Numero = "4485 0429 4065 4583";
-            //Cartao.DataValidade = "12/2024";
-            //Cartao.CodigoSeguranca = "202";
-
-            //clienteTest.CartaoCredito(Cartao);
-            //clienteTest.PreencheEndereco(Endereco, "endereco-cobranca");
-
-            //input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='email']"));
-            //input.Clear();
-            //input.SendKeys(Cliente.Email);
-            //System.Threading.Thread.Sleep(1000);
-
-            //input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='senha']"));
-            //input.Clear();
-            //input.SendKeys(Cliente.Senha);
-            //System.Threading.Thread.Sleep(1000);
-
-            //input = driver.FindElement(By.CssSelector("[data-test-target='infomacoes-acesso'] input[name$='confirmaSenha']"));
-            //input.Clear();
-            //input.SendKeys(Cliente.Senha);
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("//*[@id='submit']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(5000);
-
-            ///* FInaliza compra */
-            //button = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //IWebElement element = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label/div/div/div[1]"));
-            //var CEP = element.Text;
-            //System.Threading.Thread.Sleep(1000);
-
-            //input = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input"));
-            //input.Clear();
-            //input.SendKeys(CEP);
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(3000);
-
-            //button = driver.FindElement(By.XPath("//*[@id='container-cartoes']/label[1]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(5000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[3]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(5000);
-
-            //Assert.Pass();
+            Assert.Pass();
         }
 
         [Test]
         public void CompraComLogin()
         {
-            //driver.Navigate().GoToUrl("http://localhost");
-            //System.Threading.Thread.Sleep(3000);
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
 
-            //ClienteTest clienteTest = new ClienteTest(driver);
+            var cliente = new Client
+            {
+                Email = "coby.souza@icloud.com",
+                Senha = "Padrao.1235"
+            };
 
-            //Client Cliente = new();
-            //Cliente.Email = "coby.souza@icloud.com";
-            //Cliente.Senha = "Padrao.1235";
+            LoginCliente(cliente);
+            System.Threading.Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("http://localhost/produtos");
 
-            //clienteTest.LoginCliente(Cliente);
+            SelecionaProdutos();
 
-            //System.Threading.Thread.Sleep(2000);
+            /*Vai para o carrinho*/
+            Click("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a");
 
-            //driver.Navigate().GoToUrl("http://localhost/produtos");
-            //System.Threading.Thread.Sleep(3000);
+            /*Altera itens */
+            for (var i = 0; i < 3; i++)
+            {
+                for (var x = 0; x < i; x++)
+                {
+                    Click($"//*[@id=\"lista-produtos\"]/div[1]/table/tbody/tr[{i + 1}]/td[3]/div/button[2]");
+                }
+            }
 
-            ///*Item no carrinho*/
-            //IWebElement button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[3]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Sai do carrinho e vai para compra*/
+            Click("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button");
+            System.Threading.Thread.Sleep(3000);
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/div[3]/div/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            FinalizaCompra();
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(7000);
 
-
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            ///*Outro item no carrinho*/
-            //button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[1]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            ///*Vai para o carrinho*/
-            //button = driver.FindElement(By.XPath("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
-
-            ///*Calcula frete */
-            //IWebElement input = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[1]/input"));
-            //input.Clear();
-            //input.SendKeys("08740-450");
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[1]/div/div/div[2]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
-
-            //button = driver.FindElement(By.XPath("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(500);
-
-
-            ///* Finaliza compra */
-            //button = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //IWebElement element = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label/div/div/div[1]"));
-            //var CEP = element.Text;
-            //System.Threading.Thread.Sleep(1000);
-
-            //input = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input"));
-            //input.Clear();
-            //input.SendKeys(CEP);
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(3000);
-
-            //// Escolhe cartao
-            //button = driver.FindElement(By.XPath("//*[@id='container-cartoes']/label[1]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(5000);
-
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[3]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
-
-            //System.Threading.Thread.Sleep(5000);
-            //Assert.Pass();
+            Assert.Pass();
         }
 
         [Test]
         public void CaminhoFeliz()
         {
-            //driver.Navigate().GoToUrl("http://localhost");
-            //System.Threading.Thread.Sleep(3000);
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
 
-            //Client Cliente = new();
-            //Cliente.Email = "candace.pinheiro@google.com";
-            //Cliente.Senha = "Padrao.1235";
+            var cliente = new Client
+            {
+                Email = "candace.pinheiro@google.com",
+                Senha = "Padrao.1235"
+            };
 
-            //ClienteTest clienteTest = new ClienteTest(driver);
-            //clienteTest.LoginCliente(Cliente);
+            LoginCliente(cliente);
+            System.Threading.Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("http://localhost/produtos");
 
-            //System.Threading.Thread.Sleep(2000);
+            SelecionaProdutos();
 
-            //driver.Navigate().GoToUrl("http://localhost/produtos");
-            //System.Threading.Thread.Sleep(3000);
+            /*Vai para o carrinho*/
+            Click("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a");
 
-            ///*Item no carrinho*/
-            //IWebElement button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[3]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Altera itens */
+            for (var i = 0; i < 3; i++)
+            {
+                for (var x = 0; x < i; x++)
+                {
+                    Click($"//*[@id=\"lista-produtos\"]/div[1]/table/tbody/tr[{i + 1}]/td[3]/div/button[2]");
+                }
+            }
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/div[3]/div/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Sai do carrinho e vai para compra*/
+            Click("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button");
+            System.Threading.Thread.Sleep(3000);
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            FinalizaCompra();
 
+            /*Caso pagamento seja recusado */
+            try
+            {
+                var elemento = Element("//span[contains(text(), 'Pagamento Recusado')]");
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+                Click("//*[@id=\"refazer-pagamento\"]");
+                Click("//*[@id=\"swal2-html-container\"]/div/div[1]/div/div/label[1]");
+                Click("/html/body/div/div/div[6]/button[3]");
+            }
+            catch (Exception) { }
 
-            ///*Outro item no carrinho*/
-            //button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[1]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            var pedido = Element("/html/body/main/div[2]/div[3]/div[1]/div[1]/h2");
+            var numero = String.Join("", System.Text.RegularExpressions.Regex.Split(pedido.Text, @"[^\d]"));
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            AcessaAreaFuncionario(driver);
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[1]/div/div/div[2]/ul/li[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Acessa tela de pedidos*/
+            Click("/html/body/main/div[2]/div/div/div/div[8]/a");
 
-            ///*Outro item no carrinho*/
+            /*Aprova venda*/
+            string[] etapas = { "COMPRA APROVADA", "EM PREPARAÇÃO", "A CAMINHO",
+            "ENTREGUE"};
 
-            //button = driver.FindElement(By.XPath("//*[@id='shop-content']/div/div/div[1]/div/div[2]/h4/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            foreach (var i in etapas)
+            {
+                System.Threading.Thread.Sleep(3000);
+                Input(".dt-input.input", numero, "CSS");
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div[2]/form/button[2]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+                Click($"//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='{i}']");
+                Click("/html/body/div/div/div[6]/button[3]");
+            }
 
-            ///*Vai para o carrinho*/
-            //button = driver.FindElement(By.XPath("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
+            System.Threading.Thread.Sleep(3000);
+            Input("//*[@id='dt-search-0']", numero);
 
-            ////
-            //for (var i = 0; i < 2; i++)
-            //{
-            //    button = driver.FindElement(By.XPath("//*[@id=\"lista-produtos\"]/div[1]/table/tbody/tr[1]/td[3]/div/button[2]"));
-            //    button.Click();
-            //    System.Threading.Thread.Sleep(1000);
-            //}
+            System.Threading.Thread.Sleep(7000);
 
-            //button = driver.FindElement(By.XPath("//*[@id=\"lista-produtos\"]/div[2]/div/div[2]/div/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
+            Assert.Pass();
+        }
 
-            ///* Finaliza compra */
-            //button = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+        [Test]
+        public void FluxoCompleto()
+        {
+            driver.Navigate().GoToUrl("http://localhost");
+            System.Threading.Thread.Sleep(3000);
 
-            //IWebElement element = driver.FindElement(By.XPath("//*[@id='container-enderecos']/div[1]/label/div/div/div[1]"));
-            //var CEP = element.Text;
-            //System.Threading.Thread.Sleep(1000);
+            var cliente = new Client
+            {
+                Email = "chelsea.medeiros@google.com.br",
+                Senha = "Padrao.1235"
+            };
 
-            //IWebElement input = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input"));
-            //input.Clear();
-            //input.SendKeys(CEP);
-            //System.Threading.Thread.Sleep(1000);
+            LoginCliente(cliente);
+            System.Threading.Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("http://localhost/produtos");
 
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            SelecionaProdutos();
 
-            //System.Threading.Thread.Sleep(3000);
+            /*Vai para o carrinho*/
+            Click("/html/body/header/div[2]/div/div/div[3]/div/div/div[2]/a");
 
-            //// Escolhe cartao
-            //button = driver.FindElement(By.XPath("//*[@id='container-cartoes']/label[1]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Altera itens */
+            for (var i = 0; i < 3; i++)
+            {
+                var cliques = (i == 0 ? 2 : i == 1 ? 1 : 4);
 
-            //// Paga
-            //button = driver.FindElement(By.XPath("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+                for (var x = 0; x < cliques; x++)
+                {
+                    Click($"//*[@id=\"lista-produtos\"]/div[1]/table/tbody/tr[{i + 1}]/td[3]/div/button[2]");
+                }
+            }
 
-            //System.Threading.Thread.Sleep(5000);
+            /*Sai do carrinho e vai para compra*/
+            Click("//*[@id='lista-produtos']/div[2]/div/div[2]/div/div[3]/button");
+            System.Threading.Thread.Sleep(3000);
 
-            //try
-            //{
-            //    element = driver.FindElement(By.XPath("//span[contains(text(), 'Pagamento Recusado')]"));
+            FinalizaCompraComplexa();
 
-            //    button = driver.FindElement(By.XPath("//*[@id=\"refazer-pagamento\"]"));
-            //    button.Click();
-            //    System.Threading.Thread.Sleep(2000);
+            /*Caso pagamento seja recusado */
+            try
+            {
+                var elemento = Element("//span[contains(text(), 'Pagamento Recusado')]");
 
-            //    button = driver.FindElement(By.XPath("//*[@id=\"swal2-html-container\"]/div/div[1]/div/div/label[1]"));
-            //    button.Click();
-            //    System.Threading.Thread.Sleep(2000);
+                Click("//*[@id=\"refazer-pagamento\"]");
+                Click("//*[@id=\"swal2-html-container\"]/div/div[1]/div/div/label[1]");
+                Click("/html/body/div/div/div[6]/button[3]");
+            }
+            catch (Exception) { }
 
-            //    button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
-            //    button.Click();
-            //    System.Threading.Thread.Sleep(4000);
-            //}
-            //catch (Exception) { }
+            var pedido = Element("/html/body/main/div[2]/div[3]/div[1]/div[1]/h2");
+            var numero = String.Join("", System.Text.RegularExpressions.Regex.Split(pedido.Text, @"[^\d]"));
 
-            //element = driver.FindElement(By.XPath("/html/body/main/div[2]/div[3]/div[1]/div[1]/h2"));
-            //var texto = element.Text;
-            //System.Threading.Thread.Sleep(1000);
+            AcessaAreaFuncionario(driver);
 
-            //var npedido = String.Join("", System.Text.RegularExpressions.Regex.Split(texto, @"[^\d]"));
+            /*Acessa tela de pedidos*/
+            Click("/html/body/main/div[2]/div/div/div/div[8]/a");
 
-            //// vai para aprovacao do pedido
-            //button = driver.FindElement(By.XPath("//*[@id='acesso']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Aprova venda*/
+            string[] etapas = { "COMPRA APROVADA", "EM PREPARAÇÃO", "A CAMINHO",
+            "ENTREGUE"};
 
-            //input = driver.FindElement(By.XPath("//*[@id='form-acesso']/div/input"));
-            //input.Clear();
-            //input.SendKeys("FUV05HRO6BN");
-            //System.Threading.Thread.Sleep(1000);
+            foreach (var i in etapas)
+            {
+                System.Threading.Thread.Sleep(3000);
+                Input(".dt-input.input", numero, "CSS");
 
-            //button = driver.FindElement(By.XPath("//*[@id='acessar']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(3000);
+                Click($"//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='{i}']");
+                Click("/html/body/div/div/div[6]/button[3]");
+            }
 
-            //button = driver.FindElement(By.XPath("/html/body/main/div[2]/div/div/div/div[8]/a"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(9000);
+            System.Threading.Thread.Sleep(3000);
+            Click("//*[@id=\"sair\"]");
 
-            //input = driver.FindElement(By.XPath("//*[@id='dt-search-0']"));
-            //input.Clear();
-            //input.SendKeys(npedido);
-            //System.Threading.Thread.Sleep(3000);
+            LoginCliente(cliente);
 
-            //button = driver.FindElement(By.XPath("//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='COMPRA APROVADA']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            /*Solicita troca*/
+            Click("/html/body/main/div[2]/div/div[1]/div/div[1]/a");
+            Click($"//span[contains(text(), '#{numero}')]");
+            Click("//*[@id='solicitar-troca']");
 
-            //button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(9000);
+            for (var i = 0; i < 3; i++)
+            {
+                Click($"//*[@id=\"from-solicitacao\"]/div[1]/table/tbody/tr[{i + 2}]/td[1]/div/label/input");
+            }
 
-            //input = driver.FindElement(By.XPath("//*[@id='dt-search-0']"));
-            //input.Clear();
-            //input.SendKeys(npedido);
-            //System.Threading.Thread.Sleep(1000);
+            Input("//*[@id=\"from-solicitacao\"]/div[2]/label/textarea", "Solictando troca de teste");
+            Click("/html/body/div/div/div[6]/button[3]");
 
-            ////
-            //button = driver.FindElement(By.XPath("//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='EM PREPARAÇÃO']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            var texto = Element("/html/body/main/div[2]/div[1]/div/p").Text;
+            var solicitacao = String.Join("", System.Text.RegularExpressions.Regex.Split(texto, @"[^\d]"));
 
-            //button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(9000);
+            AcessaAreaFuncionario(driver);
 
-            //input = driver.FindElement(By.XPath("//*[@id='dt-search-0']"));
-            //input.Clear();
-            //input.SendKeys(npedido);
-            //System.Threading.Thread.Sleep(1000);
+            /*Acessa tela de solicitações*/
+            Click("/html/body/main/div[2]/div/div/div/div[2]/a");
+            Click($"//h2[contains(text(), 'Nº da Solicitação #{solicitacao}')]");
 
-            ////
-            //button = driver.FindElement(By.XPath("//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='A CAMINHO']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            for (var i = 0; i < 3; i++)
+            {
+                Click($"/html/body/main/div[2]/div[1]/form/div/table/tbody/tr[{i + 1}]/td[8]/div[2]/button");
+                Click("/html/body/div/div/div[6]/button[3]");
+                System.Threading.Thread.Sleep(1000);
+            }
 
-            //button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(9000);
+            System.Threading.Thread.Sleep(3000);
+            Click("//*[@id=\"sair\"]");
 
-            //input = driver.FindElement(By.XPath("//*[@id='dt-search-0']"));
-            //input.Clear();
-            //input.SendKeys(npedido);
-            //System.Threading.Thread.Sleep(1000);
+            LoginCliente(cliente);
+            Click("/html/body/main/div[2]/div/div[1]/div/div[3]/a");
+            Click($"//h2[contains(text(), 'Nº da Solicitação #{solicitacao}')]");
 
-            ////
-            //button = driver.FindElement(By.XPath("//*[@id='registros']/tbody/tr[1]/td[9]/div[1]/button[@data-etapa='ENTREGUE']"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(1000);
+            for (var i = 0; i < 3; i++)
+            {
+                Click($"/html/body/main/div[2]/div[1]/form/div/table/tbody/tr[{i + 1}]/td[8]/div[2]/button");
+                Click("/html/body/div/div/div[6]/button[3]");
+                System.Threading.Thread.Sleep(1000);
+            }
 
-            //button = driver.FindElement(By.XPath("/html/body/div/div/div[6]/button[3]"));
-            //button.Click();
-            //System.Threading.Thread.Sleep(9000);
+            AcessaAreaFuncionario(driver);
 
-            //input = driver.FindElement(By.XPath("//*[@id='dt-search-0']"));
-            //input.Clear();
-            //input.SendKeys(npedido);
-            //System.Threading.Thread.Sleep(1000);
+            /*Acessa tela de solicitações*/
+            Click("/html/body/main/div[2]/div/div/div/div[2]/a");
+            Click($"//h2[contains(text(), 'Nº da Solicitação #{solicitacao}')]");
+
+            for (var x = 0; x < 2; x++)
+                for (var i = 0; i < 3; i++)
+                {
+                    Click($"/html/body/main/div[2]/div[1]/form/div/table/tbody/tr[{i + 1}]/td[8]/div/button");
+                    Click("/html/body/div/div/div[6]/button[3]");
+                    System.Threading.Thread.Sleep(1000);
+                }
+
+            System.Threading.Thread.Sleep(3000);
+            Click("//*[@id=\"sair\"]");
+
+            LoginCliente(cliente);
+            Click("/html/body/main/div[2]/div/div[1]/div/div[5]/a");
+
+            texto = Element("/html/body/main/div[2]/div/form/div/table/tbody/tr[3]/td[1]").Text;
+            System.Threading.Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("http://localhost/produtos");
+
+            Random num = new Random();
+            Click($"//*[@id='shop-content']/div/div/div[{num.Next(1, 10)}]/div/div[2]/h4/a");
+            Click("/html/body/main/div[2]/div[2]/form/button[1]");
+
+            Click("//*[@id=\"container-enderecos\"]/div[1]/label");
+            var CEP = Element("//*[@id=\"container-enderecos\"]/div[1]/label/div/div/div[1]").Text;
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[1]/input", CEP);
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[3]/form/div/div[2]/button");
+
+            Click("//*[@id='container-cartoes']/label[1]");
+
+            Input("/html/body/main/section/div[2]/div/div[2]/div/div[2]/form/div/div[1]/input", texto);
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[2]/form/div/div[2]/button");
+
+            System.Threading.Thread.Sleep(3000);
+            Click("/html/body/main/section/div[2]/div/div[2]/div/div[4]/div[3]/button");
+
+            System.Threading.Thread.Sleep(7000);
+
+            Assert.Pass();
         }
 
         [TearDown]

@@ -12,69 +12,21 @@ namespace TestEcommerceNUnit
     {
         private IWebDriver driver;
 
+        public ClienteTest() { }
+
+        public ClienteTest(IWebDriver _driver)
+        {
+            driver = _driver;
+        }
+
         [SetUp]
         public void Setup()
         {
             driver = new ChromeDriver();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
-            //driver.Manage().Window.Maximize();
-            driver.Manage().Window.Size = new System.Drawing.Size(583, 391);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+            driver.Manage().Window.Maximize();
 
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
-        }
-
-        private void PreencheDadosPessoais(Client cliente)
-        {
-            Input("[data-test-target='dados-cadastrais'] input[name$='.nome']", cliente.Nome, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='.sobrenome']", cliente.Sobrenome, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='cpf']", cliente.CPF, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='celular']", cliente.Celular, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='telefone']", cliente.Telefone, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='rg']", cliente.RG, "CSS");
-            Input("[data-test-target='dados-cadastrais'] input[name$='dataNascimento']", cliente.DataNascimento.ToString("d"), "CSS");
-
-            Select("[data-test-target='dados-cadastrais'] select[name$='genero']", cliente.Genero, "CSS");
-
-            Click("[data-test-target='dados-cadastrais'] [data-action='next']", "CSS");
-        }
-
-        private void PreencheEndereco(Address endereco, string tipo)
-        {
-            Input($"[data-test-target='{tipo}'] input[name$='cep']", endereco.CEP, "CSS");
-            Click($"[data-test-target='{tipo}'] .viacep", "CSS");
-
-            Select($"[data-test-target='{tipo}'] select[name$='tipoLogradouro']", endereco.TipoLogradouro, "CSS");
-            Select($"[data-test-target='{tipo}'] select[name$='tipoResidencia']", endereco.TipoResidencia, "CSS");
-
-            Input($"[data-test-target='{tipo}'] input[name$='numero']", endereco.Numero, "CSS");
-            Input($"[data-test-target='{tipo}'] input[name$='nomeEndereco']", endereco.NomeEndereco, "CSS");
-
-            Click($"[data-test-target='{tipo}'] [data-action='next']", "CSS");
-        }
-
-        private void CartaoCredito(Card cartao)
-        {
-            Select("[data-test-target='informacoes-pagamento'] select[name$='idBandeira']", cartao.NomeBandeira, "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='nomeTitular']", cartao.NomeTitular, "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='nomeCartao']", cartao.NomeCartao, "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='CPFTitular']", cartao.CPFTitular, "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='numero']", cartao.Numero, "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='mes']", cartao.DataValidade.Split("/")[0], "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='ano']", cartao.DataValidade.Split("/")[1], "CSS");
-            Input("[data-test-target='informacoes-pagamento'] input[name$='codigoSeguranca']", cartao.CodigoSeguranca, "CSS");
-
-            Click("[data-test-target='informacoes-pagamento'] [data-action='next']", "CSS");
-        }
-
-
-        private void LoginCliente(Client cliente)
-        {
-            Click("#entrar", "CSS");
-
-            Input("//*[@id='login-cliente']/label[1]/label/input", cliente.Email);
-            Input("//*[@id='login-cliente']/label[2]/label/input", cliente.Senha);
-
-            Click("/html/body/div/div/div[6]/button[1]");
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
         }
 
         [Test]
@@ -141,6 +93,10 @@ namespace TestEcommerceNUnit
                 Input("[data-test-target='infomacoes-acesso'] input[name$='confirmaSenha']", cliente.Senha, "CSS");
 
                 Click("#submit", "CSS");
+
+                System.Threading.Thread.Sleep(7000);
+
+                Assert.Pass();
             }
             catch (AssertionException ex)
             {
@@ -164,6 +120,10 @@ namespace TestEcommerceNUnit
                 };
 
                 LoginCliente(cliente);
+
+                System.Threading.Thread.Sleep(7000);
+
+                Assert.Pass();
             }
             catch (AssertionException ex)
             {
@@ -212,7 +172,7 @@ namespace TestEcommerceNUnit
 
             Click("/html/body/div/div/div[6]/button[3]");
 
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(7000);
 
             Assert.Pass();
         }
@@ -233,7 +193,7 @@ namespace TestEcommerceNUnit
             Click("#excluir-conta", "CSS");
             Click("/html/body/div/div/div[6]/button[3]");
 
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(7000);
 
             Assert.Pass();
         }
